@@ -77,6 +77,25 @@ app.get('/products', async (req, res, next) => {
     }
 })
 
+app.get('/landingpage', async (req, res, next) => {
+    const client = new MongoClient(uri)
+    //const product_name = req.query.getProduct.name;
+    //const formData = JSON.parse(req)
+
+    try {
+        await client.connect()
+        const database = client.db('vitachimart-products');
+        const products = database.collection('copy-items')
+
+        //const query = {product_name: product_name}
+        const product = await products.find().limit(12).toArray();
+        //console.log(product)
+        res.send(product)
+    } finally {
+        await client.close()
+    }
+})
+
 if (process.env.NODE_ENV === "production") {
     app.use(express.static("client/build"));
     app.get("*", (req, res) => {
