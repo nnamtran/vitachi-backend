@@ -51,8 +51,17 @@ app.post("/addproduct", upload.single("image"), async (req, res, next) => {
             }
         }
 
-        const insertedProduct = await register.insertOne(data);
-        res.status(200).send("Success");
+        const checkduplicate = await register.findOne({product_name: data.product_name});
+
+        if (checkduplicate) {
+            res.status(200).send("Sản phẩm đã có trong dữ liệu");
+        } else {
+            const insertedProduct = await register.insertOne(data);
+            res.status(200).send("success");
+        }
+
+        
+        
 
     } catch(error) {
         console.log(error)
@@ -98,18 +107,33 @@ app.get('/landingpage', async (req, res, next) => {
 
 app.get('/allproducts', async (req, res, next) => {
     const client = new MongoClient(uri)
-    //const product_name = req.query.getProduct.name;
-    //const formData = JSON.parse(req)
 
+    const productCategory = [];
     try {
         await client.connect()
         const database = client.db('vitachimart-products');
         const products = database.collection('products')
 
-        //const query = {product_name: product_name}
-        const product = await products.find().limit(12).toArray();
+        const vitamins = await products.find({"category": "vitamins"}).toArray();
+        const baby = await products.find({"category": "baby"}).toArray();
+        const elderly = await products.find({"category": "elderly"}).toArray();
+        const men = await products.find({"category": "men"}).toArray();
+        const pregnancy = await products.find({"category": "pregnancy"}).toArray();
+        const women = await products.find({"category": "women"}).toArray();
+
+        productCategory.push({
+            vitamins,
+            baby,
+            elderly,
+            men,
+            pregnancy,
+            women
+        })
+        const product = await products.distinct("category");
+
+
         //console.log(product)
-        res.send(product)
+        res.send(productCategory)
     } finally {
         await client.close()
     }
