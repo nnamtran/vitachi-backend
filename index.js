@@ -88,18 +88,33 @@ app.get('/products', async (req, res, next) => {
 
 app.get('/landingpage', async (req, res, next) => {
     const client = new MongoClient(uri)
-    //const product_name = req.query.getProduct.name;
-    //const formData = JSON.parse(req)
+    const productCategory = [];
 
     try {
         await client.connect()
         const database = client.db('vitachimart-products');
-        const products = database.collection('copy-items')
+        const products = database.collection('products')
 
-        //const query = {product_name: product_name}
-        const product = await products.find().limit(12).toArray();
-        //console.log(product)
-        res.send(product)
+        //const product = await products.find().limit(12).toArray();
+
+        const vitamins = await products.find({"category": "vitamins"}).limit(6).toArray();
+        const baby = await products.find({"category": "baby"}).limit(6).toArray();
+        const elderly = await products.find({"category": "elderly"}).limit(6).toArray();
+        const men = await products.find({"category": "men"}).limit(6).toArray();
+        const pregnancy = await products.find({"category": "pregnancy"}).limit(6).toArray();
+        const women = await products.find({"category": "women"}).limit(6).toArray();
+
+        productCategory.push({
+            vitamins,
+            baby,
+            elderly,
+            men,
+            pregnancy,
+            women
+        })
+
+        //console.log(productCategory)
+        res.send(productCategory)
     } finally {
         await client.close()
     }
@@ -129,9 +144,7 @@ app.get('/allproducts', async (req, res, next) => {
             pregnancy,
             women
         })
-        const product = await products.distinct("category");
-
-
+        //const product = await products.distinct("category");
         //console.log(product)
         res.send(productCategory)
     } finally {
