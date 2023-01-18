@@ -133,32 +133,43 @@ app.get('/allproducts', async (req, res, next) => {
     const client = new MongoClient(uri)
 
     const productCategory = [];
-    try {
-        await client.connect()
-        const database = client.db('vitachimart-products');
-        const products = database.collection('products')
+    let data = fs.readFileSync('./data/all.txt');
+    let response = JSON.parse(data);
+    //console.log(response);
+    res.send(response);
+    // try {
+    //     await client.connect()
+    //     const database = client.db('vitachimart-products');
+    //     const products = database.collection('products')
 
-        const vitamins = await products.find({"category": "vitamins"}).toArray();
-        const baby = await products.find({"category": "baby"}).toArray();
-        const elderly = await products.find({"category": "elderly"}).toArray();
-        const men = await products.find({"category": "men"}).toArray();
-        const pregnancy = await products.find({"category": "pregnancy"}).toArray();
-        const women = await products.find({"category": "women"}).toArray();
+    //     const vitamins = await products.find({"category": "vitamins"}).toArray();
+    //     const baby = await products.find({"category": "baby"}).toArray();
+    //     const elderly = await products.find({"category": "elderly"}).toArray();
+    //     const men = await products.find({"category": "men"}).toArray();
+    //     const pregnancy = await products.find({"category": "pregnancy"}).toArray();
+    //     const women = await products.find({"category": "women"}).toArray();
 
-        productCategory.push({
-            vitamins,
-            baby,
-            elderly,
-            men,
-            pregnancy,
-            women
-        })
-        //const product = await products.distinct("category");
-        //console.log(product)
-        res.send(productCategory)
-    } finally {
-        await client.close()
-    }
+    //     productCategory.push({
+    //         vitamins,
+    //         baby,
+    //         elderly,
+    //         men,
+    //         pregnancy,
+    //         women
+    //     })
+
+    //     const jsonData = JSON.stringify(productCategory[0])
+    //     fs.writeFile("./data/all.txt", jsonData, function(err) {
+    //         if (err) {
+    //             console.log(err);
+    //         }
+    //     });
+    //     //const product = await products.distinct("category");
+    //     //console.log(product)
+    //     res.send(productCategory)
+    // } finally {
+    //     await client.close()
+    // }
 })
 
 if (process.env.NODE_ENV === "production") {
