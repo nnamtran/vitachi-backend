@@ -1,6 +1,5 @@
 require('dotenv').config()
 const path = require('path')
- 
 PORT = process.env.PORT || 3004;
 
 const express = require("express")
@@ -90,34 +89,44 @@ app.get('/landingpage', async (req, res, next) => {
     const client = new MongoClient(uri)
     const productCategory = [];
 
-    try {
-        await client.connect()
-        const database = client.db('vitachimart-products');
-        const products = database.collection('products')
+    let data = fs.readFileSync('./data/test.txt');
+    let response = JSON.parse(data);
+    //console.log(response);
+    res.send(response);
+    // try {
+    //     await client.connect()
+    //     const database = client.db('vitachimart-products');
+    //     const products = database.collection('products')
 
-        //const product = await products.find().limit(12).toArray();
+    //     //const product = await products.find().limit(12).toArray();
 
-        const vitamins = await products.find({"category": "vitamins"}).limit(6).toArray();
-        const baby = await products.find({"category": "baby"}).limit(6).toArray();
-        const elderly = await products.find({"category": "elderly"}).limit(6).toArray();
-        const men = await products.find({"category": "men"}).limit(6).toArray();
-        const pregnancy = await products.find({"category": "pregnancy"}).limit(6).toArray();
-        const women = await products.find({"category": "women"}).limit(6).toArray();
+    //     const vitamins = await products.find({"category": "vitamins"}).limit(6).toArray();
+    //     const baby = await products.find({"category": "baby"}).limit(6).toArray();
+    //     const elderly = await products.find({"category": "elderly"}).limit(6).toArray();
+    //     const men = await products.find({"category": "men"}).limit(6).toArray();
+    //     const pregnancy = await products.find({"category": "pregnancy"}).limit(6).toArray();
+    //     const women = await products.find({"category": "women"}).limit(6).toArray();
 
-        productCategory.push({
-            vitamins,
-            baby,
-            elderly,
-            men,
-            pregnancy,
-            women
-        })
+    //     productCategory.push({
+    //         vitamins,
+    //         baby,
+    //         elderly,
+    //         men,
+    //         pregnancy,
+    //         women
+    //     })
 
-        //console.log(productCategory)
-        res.send(productCategory)
-    } finally {
-        await client.close()
-    }
+    //     const jsonData = JSON.stringify(productCategory[0])
+    //     fs.writeFile("./data/test.txt", jsonData, function(err) {
+    //         if (err) {
+    //             console.log(err);
+    //         }
+    //     });
+    //     console.log(productCategory)
+    //     res.send(productCategory)
+    // } finally {
+    //     await client.close()
+    // }
 })
 
 app.get('/allproducts', async (req, res, next) => {
